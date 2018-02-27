@@ -28,6 +28,7 @@ public class Compass implements SensorEventListener {
 
     // compass arrow to rotate
     public ImageView arrowView = null;
+    public ImageView dialView = null;
     public TextView textView = null;
 
     public Compass(Context context) {

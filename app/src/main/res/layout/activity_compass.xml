@@ -19,7 +19,7 @@
             android:padding="10dp"
             android:text="Compass"
             android:textColor="#ffffff"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
@@ -29,7 +29,7 @@
             android:padding="10dp"
             android:text="ads"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -63,7 +63,7 @@
             android:gravity="center"
             android:text="30sp"
             android:textColor="#019f43"
-            android:textSize="30sp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -74,6 +74,13 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:src="@mipmap/unlock" />
+
+        <Button
+            android:id="@+id/btnThemes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Themes" />
 
     </RelativeLayout>
 
@@ -96,7 +103,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="#019f43"
-            android:textSize="16sp"
+            android:textSize="19sp"
             android:textStyle="bold" />
 
 
@@ -118,7 +125,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="#019f43"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -129,7 +136,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="#019f43"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 

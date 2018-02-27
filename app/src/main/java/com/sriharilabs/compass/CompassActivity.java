@@ -1,14 +1,25 @@
 package com.sriharilabs.compass;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.IntentSender;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.util.Log;
 import android.widget.TextView;
@@ -38,13 +49,13 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
-
 public class CompassActivity extends AppCompatActivity {
 
     private static final String TAG = "CompassActivity";
 
     private Compass compass;
     private ImageView mLockUnloackImg;
+    private Button mThemesBtn;
     private TextView latTxt, lngTxt, cityTxt, textViewAds;
     private boolean isLock = false;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -69,12 +80,21 @@ public class CompassActivity extends AppCompatActivity {
 
         compass = new Compass(this);
         compass.arrowView = (ImageView) findViewById(R.id.main_image_hands);
+        compass.dialView = (ImageView) findViewById(R.id.main_image_dial);
         compass.textView = (TextView) findViewById(R.id.textView);
         mLockUnloackImg = (ImageView) findViewById(R.id.imageViewLock);
         latTxt = (TextView) findViewById(R.id.textViewLat);
         lngTxt = (TextView) findViewById(R.id.textViewLng);
         cityTxt = (TextView) findViewById(R.id.textViewCity);
         textViewAds = (TextView) findViewById(R.id.textViewAds);
+        mThemesBtn = (Button) findViewById(R.id.btnThemes);
+
+        mThemesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showThemeDialog();
+            }
+        });
 
         mLockUnloackImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,5 +272,80 @@ public class CompassActivity extends AppCompatActivity {
     private Double getFilterDouble(double value) {
         DecimalFormat df = new DecimalFormat("#.####");
         return Double.valueOf(df.format(value));
+    }
+
+    private void showThemeDialog() {
+        final Dialog dialogItemDetails = new Dialog(CompassActivity.this);
+        dialogItemDetails.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogItemDetails.setContentView(R.layout.dialog_theme);
+        dialogItemDetails.getWindow().setBackgroundDrawable(
+                new ColorDrawable(Color.TRANSPARENT));
+
+        ViewPager viewPager = (ViewPager) dialogItemDetails.findViewById(R.id.viewPagerItemImages);
+        viewPager.setAdapter(new CustomPagerAdapter(dialogItemDetails, CompassActivity.this));
+        dialogItemDetails.show();
+    }
+
+    private void setThemes(int position) {
+        switch (position) {
+            case 0:
+                compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t1_hand));
+                compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t1_dial));
+                break;
+
+            case 1:
+                compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t2_hand));
+                compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t2_dial));
+                break;
+
+            case 2:
+                compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t3_hand));
+                compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t3_dial));
+                break;
+
+        }
+    }
+
+    public class CustomPagerAdapter extends PagerAdapter {
+
+        private Context mContext;
+        int[] images = {R.mipmap.t1_final, R.mipmap.t2_final, R.mipmap.t3_final};
+        Dialog dialog;
+
+        public CustomPagerAdapter(Dialog dialog, Context context) {
+            mContext = context;
+            this.dialog = dialog;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, final int position) {
+            ImageView imageView = new ImageView(mContext);
+            imageView.setImageResource(images[position]);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setThemes(position);
+                    dialog.dismiss();
+                }
+            });
+            collection.addView(imageView);
+            return imageView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public int getCount() {
+            return images.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
     }
 }
