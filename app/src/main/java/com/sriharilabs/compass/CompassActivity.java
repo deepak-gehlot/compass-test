@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.util.Log;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.jksiezni.permissive.PermissionsGrantedListener;
@@ -43,9 +45,12 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.sriharilabs.PreferenceConnector;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,11 +67,14 @@ public class CompassActivity extends AppCompatActivity {
     private LocationCallback mLocationCallback;
     private InterstitialAd mInterstitialAd;
     private AdView mAdView;
+    private int selectedTheme = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
+
+        selectedTheme = PreferenceConnector.readInteger(this, PreferenceConnector.THEME, R.mipmap.t5_final);
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-5957117184239951/4531208310");
@@ -88,6 +96,16 @@ public class CompassActivity extends AppCompatActivity {
         cityTxt = (TextView) findViewById(R.id.textViewCity);
         textViewAds = (TextView) findViewById(R.id.textViewAds);
         mThemesBtn = (Button) findViewById(R.id.btnThemes);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width-130, width-130);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        compass.dialView.setLayoutParams(layoutParams);
+        compass.arrowView.setLayoutParams(layoutParams);
+        setThemes(selectedTheme);
 
         mThemesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,51 +299,82 @@ public class CompassActivity extends AppCompatActivity {
         dialogItemDetails.getWindow().setBackgroundDrawable(
                 new ColorDrawable(Color.TRANSPARENT));
 
+        TextView dismiss = (TextView) dialogItemDetails.findViewById(R.id.dismissBtn);
         ViewPager viewPager = (ViewPager) dialogItemDetails.findViewById(R.id.viewPagerItemImages);
         viewPager.setAdapter(new CustomPagerAdapter(dialogItemDetails, CompassActivity.this));
+
+        dismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogItemDetails.dismiss();
+            }
+        });
         dialogItemDetails.show();
     }
 
     private void setThemes(int position) {
         switch (position) {
-            case 0:
+            case R.mipmap.t1_final:
                 compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t1_hand));
                 compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t1_dial));
                 break;
 
-            case 1:
+            case R.mipmap.t2_final:
                 compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t2_hand));
                 compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t2_dial));
                 break;
 
-            case 2:
+            case R.mipmap.t3_final:
                 compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t3_hand));
                 compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t3_dial));
                 break;
 
+            case R.mipmap.t4_final:
+                compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t4_hand));
+                compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.t4_dial));
+                break;
+
+            case R.mipmap.t5_final:
+                compass.arrowView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.rotating));
+                compass.dialView.setImageDrawable(ContextCompat.getDrawable(CompassActivity.this, R.mipmap.dial));
+                break;
         }
     }
 
     public class CustomPagerAdapter extends PagerAdapter {
 
         private Context mContext;
-        int[] images = {R.mipmap.t1_final, R.mipmap.t2_final, R.mipmap.t3_final};
+        List<Integer> imageList = new ArrayList<>();
+
         Dialog dialog;
 
         public CustomPagerAdapter(Dialog dialog, Context context) {
             mContext = context;
             this.dialog = dialog;
+            imageList.add(R.mipmap.t5_final);
+            imageList.add(R.mipmap.t1_final);
+            imageList.add(R.mipmap.t2_final);
+            imageList.add(R.mipmap.t3_final);
+            imageList.add(R.mipmap.t4_final);
+            for (int i = 0; i < imageList.size(); i++) {
+                if (selectedTheme == imageList.get(i)) {
+                    imageList.remove(i);
+                }
+            }
         }
 
         @Override
         public Object instantiateItem(ViewGroup collection, final int position) {
             ImageView imageView = new ImageView(mContext);
-            imageView.setImageResource(images[position]);
+            imageView.setImageResource(imageList.get(position));
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setThemes(position);
+                    PreferenceConnector.writeInteger(CompassActivity.this, PreferenceConnector.THEME, imageList.get
+                            (position));
+                    selectedTheme = imageList.get(position);
+                    setThemes(imageList.get(position));
                     dialog.dismiss();
                 }
             });
@@ -340,7 +389,7 @@ public class CompassActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return images.length;
+            return imageList.size();
         }
 
         @Override

@@ -63,7 +63,7 @@
             android:gravity="center"
             android:text="30sp"
             android:textColor="#019f43"
-            android:textSize="32sp"
+            android:textSize="45sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -72,7 +72,6 @@
             android:layout_height="50dp"
             android:layout_below="@+id/textView"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
             android:src="@mipmap/unlock" />
 
         <Button
@@ -80,7 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="Themes" />
+            android:text="Themes"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
@@ -88,12 +88,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/latLngLayout"
+        android:layout_marginBottom="-10dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="20dp"
+            android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_marginBottom="-10dp"
             android:src="@mipmap/location_icon" />
 
         <TextView
@@ -103,7 +105,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="#019f43"
-            android:textSize="19sp"
+            android:textSize="34sp"
             android:textStyle="bold" />
 
 
@@ -114,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/adsLayout"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="2dp"
         android:orientation="horizontal">
 
         <TextView
@@ -125,7 +127,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="#019f43"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -136,7 +138,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="#019f43"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 

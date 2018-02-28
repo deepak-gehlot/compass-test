@@ -18,8 +18,21 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPagerItemImages"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="330dp"
         android:layout_below="@+id/txtHeaderTitle"
         android:background="@android:color/white" />
+
+    <TextView
+        android:id="@+id/dismissBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewPagerItemImages"
+        android:background="#f2f2f2"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Dismiss"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
